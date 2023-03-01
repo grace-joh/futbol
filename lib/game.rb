@@ -17,4 +17,8 @@ class Game
     @away_goals = data[:away_goals]
     @home_goals = data[:home_goals]
   end
+
+  def scoring_total
+    @away_goals + @home_goals
+  end
 end

@@ -33,19 +33,19 @@ class StatTracker
 
   def highest_total_score
     all_games.map do |game|
-      game.score_count
+      game.total_score
     end.max
   end
 
   def lowest_total_score
     all_games.map do |game|
-      game.score_count
+      game.total_score
     end.min
   end
 
   def average_goals_per_game
     game_array = all_games.map do |game|
-      game.score_count
+      game.total_score
     end
     (game_array.sum.to_f / game_array.count).round(2)
   end

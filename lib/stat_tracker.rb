@@ -37,18 +37,6 @@ class StatTracker
     end
   end
 
-  def highest_total_score
-    all_games.map do |game|
-      game.total_score
-    end.max
-  end
-
-  def lowest_total_score
-    all_games.map do |game|
-      game.total_score
-    end.min
-  end
-
   def games_by_season
     seasons = Hash.new([])
     all_games.each do |game|
@@ -60,5 +48,18 @@ class StatTracker
       end
     end
     seasons
+  end
+  =====================================================================================================
+
+  def highest_total_score
+    all_games.map do |game|
+      game.total_score
+    end.max
+  end
+
+  def lowest_total_score
+    all_games.map do |game|
+      game.total_score
+    end.min
   end
 end

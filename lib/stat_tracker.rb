@@ -42,4 +42,11 @@ class StatTracker
       game.score_count
     end.min
   end
+
+  def average_goals_per_game
+    game_array = all_games.map do |game|
+      game.score_count
+    end
+    (game_array.sum.to_f / game_array.count).round(2)
+  end
 end

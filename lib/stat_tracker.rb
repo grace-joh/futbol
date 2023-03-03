@@ -60,18 +60,14 @@ class StatTracker
   end
 
   def winningest_coach(season)
-    coach_games = Hash.new([])
+    coach_games = Hash.new(0)
     game_teams_by_season(season).each do |game_team|
-        coach_games[game_team.head_coach] = []
+        coach_games[game_team.head_coach] = 0
     end
     game_teams_by_season(season).each do |game_team|
-      coach_games[game_team.head_coach] << game_team if game_team.result == "WIN"
-      end
+      coach_games[game_team.head_coach] +=1 if game_team.result == "WIN"
     end
-    # coach_games.each do |key, value|
-    #   coach_counter = 0
-    #   coach_counter  game_team_array.count
-    # end
+    
   end
 
   # hash.select {|k,v| v == hash.values.max }

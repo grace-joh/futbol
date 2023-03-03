@@ -50,6 +50,31 @@ class StatTracker
     seasons
   end
   #=====================================================================================================
+  def game_teams_by_season(season)
+    games_by_season[season].map do |game|
+      all_game_teams.find_all do |game_by_team|
+        game.id == game_by_team.game_id #array of gameteams
+                                        #in that season
+      end
+    end.flatten
+  end
+
+  def winningest_coach(season)
+    coach_games = Hash.new([])
+    game_teams_by_season(season).each do |game_team|
+        coach_games[game_team.head_coach] = []
+    end
+    game_teams_by_season(season).each do |game_team|
+      coach_games[game_team.head_coach] << game_team if game_team.result == "WIN"
+      end
+    end
+    # coach_games.each do |key, value|
+    #   coach_counter = 0
+    #   coach_counter  game_team_array.count
+    # end
+  end
+
+  # hash.select {|k,v| v == hash.values.max }
 
   def highest_total_score
     all_games.map do |game|

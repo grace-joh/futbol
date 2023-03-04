@@ -1,6 +1,7 @@
 require 'csv'
 require_relative 'game'
 require_relative 'team'
+require_relative 'game_team'
 
 class StatTracker 
   #include modules
@@ -61,13 +62,24 @@ class StatTracker
 
   def winningest_coach(season)
     coach_games = Hash.new(0)
-    game_teams_by_season(season).each do |game_team|
-        coach_games[game_team.head_coach] = 0
-    end
+    # game_teams_by_season(season).each do |game_team|
+    #     coach_games[game_team.head_coach] = 0
+    # end
     game_teams_by_season(season).each do |game_team|
       coach_games[game_team.head_coach] +=1 if game_team.result == "WIN"
     end
-    
+    coach_games.max_by {|coach, coach_wins| coach_wins}[0]
+  end
+
+  def worst_coach(season)
+    coach_games = Hash.new(0)
+    # game_teams_by_season(season).each do |game_team|
+    #     coach_games[game_team.head_coach] = 0
+    # end
+    game_teams_by_season(season).each do |game_team|
+      coach_games[game_team.head_coach] +=1 if game_team.result == "LOSS"
+    end
+    coach_games.max_by {|coach, coach_losses| coach_losses}[0]
   end
 
   # hash.select {|k,v| v == hash.values.max }

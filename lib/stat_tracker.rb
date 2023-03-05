@@ -60,29 +60,50 @@ class StatTracker
     end.flatten
   end
 
+
   def winningest_coach(season)
-    coach_games = Hash.new(0)
-    # game_teams_by_season(season).each do |game_team|
-    #     coach_games[game_team.head_coach] = 0
-    # end
+    coach_games = Hash.new([0,0,0])
     game_teams_by_season(season).each do |game_team|
-      coach_games[game_team.head_coach] +=1 if game_team.result == "WIN"
+      coach_games[game_team.head_coach] = [0,0,0]
     end
-    coach_games.max_by {|coach, coach_wins| coach_wins}[0]
+    game_teams_by_season(season).each do |game_team|
+      if game_team.result == "WIN"
+        coach_games[game_team.head_coach][0] +=1 
+      elsif game_team.result == "TIE"
+        coach_games[game_team.head_coach][1] +=1
+      elsif game_team.result == "LOSS"
+      coach_games[game_team.head_coach][2] +=1
+      else 
+        return false
+      end
+    end
+    coach_percentage = coach_games.transform_values do |details|
+       details[0].fdiv(details[0] + details[1] + details[2])
+    end
+    coach_percentage.max_by {|coach, game_counters| game_counters}.first
   end
 
   def worst_coach(season)
-    coach_games = Hash.new(0)
-    # game_teams_by_season(season).each do |game_team|
-    #     coach_games[game_team.head_coach] = 0
-    # end
+    coach_games = Hash.new([0,0,0])
     game_teams_by_season(season).each do |game_team|
-      coach_games[game_team.head_coach] +=1 if game_team.result == "LOSS"
+      coach_games[game_team.head_coach] = [0,0,0]
     end
-    coach_games.max_by {|coach, coach_losses| coach_losses}[0]
+    game_teams_by_season(season).each do |game_team|
+      if game_team.result == "LOSS"
+        coach_games[game_team.head_coach][0] +=1 
+      elsif game_team.result == "TIE"
+        coach_games[game_team.head_coach][1] +=1
+      elsif game_team.result == "WIN"
+      coach_games[game_team.head_coach][2] +=1
+      else 
+        return false
+      end
+    end
+    coach_percentage = coach_games.transform_values do |details|
+       details[0].fdiv(details[0] + details[1] + details[2])
+    end
+    coach_percentage.max_by {|coach, game_counters| game_counters}.first
   end
-
-  # hash.select {|k,v| v == hash.values.max }
 
   def highest_total_score
     all_games.map do |game|

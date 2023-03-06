@@ -43,8 +43,8 @@ class StatTracker < StatData
     @game_stats.count_of_games_by_season 
   end
 
-  def average_goals_by_game
-    @game_stats.average_goals_by_game
+  def average_goals_per_game
+    @game_stats.average_goals_per_game
   end
 
   def average_goals_by_season

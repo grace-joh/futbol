@@ -59,8 +59,27 @@ class StatTracker
       end
     end.flatten
   end
-
-
+  #add to winningest/worst
+#   def sort_coach_games(season)
+#   game_teams_by_season(season).each do |game_team|
+#     if game_team.result == "WIN"
+#       coach_games[game_team.head_coach][0] +=1 
+#     elsif game_team.result == "TIE"
+#       coach_games[game_team.head_coach][1] +=1
+#     elsif game_team.result == "LOSS"
+#     coach_games[game_team.head_coach][2] +=1
+#     else 
+#       return false
+#     end
+#   end
+# end
+  #add to winningest/worst
+# def coach_percentage
+#   coach_games.transform_values do |details|
+#     details[0].fdiv(details[0] + details[1] + details[2])
+#  end
+# end
+  
   def winningest_coach(season)
     coach_games = Hash.new([0,0,0])
     game_teams_by_season(season).each do |game_team|
@@ -78,8 +97,8 @@ class StatTracker
       end
     end
     coach_percentage = coach_games.transform_values do |details|
-       details[0].fdiv(details[0] + details[1] + details[2])
-    end
+      details[0].fdiv(details[0] + details[1] + details[2])
+   end
     coach_percentage.max_by {|coach, game_counters| game_counters}.first
   end
 
@@ -89,20 +108,20 @@ class StatTracker
       coach_games[game_team.head_coach] = [0,0,0]
     end
     game_teams_by_season(season).each do |game_team|
-      if game_team.result == "LOSS"
+      if game_team.result == "WIN"
         coach_games[game_team.head_coach][0] +=1 
       elsif game_team.result == "TIE"
         coach_games[game_team.head_coach][1] +=1
-      elsif game_team.result == "WIN"
+      elsif game_team.result == "LOSS"
       coach_games[game_team.head_coach][2] +=1
       else 
         return false
       end
     end
     coach_percentage = coach_games.transform_values do |details|
-       details[0].fdiv(details[0] + details[1] + details[2])
-    end
-    coach_percentage.max_by {|coach, game_counters| game_counters}.first
+      details[0].fdiv(details[0] + details[1] + details[2])
+   end
+    coach_percentage.min_by {|coach, game_counters| game_counters}.first
   end
 
   def highest_total_score

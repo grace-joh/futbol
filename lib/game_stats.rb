@@ -65,4 +65,11 @@ class GameStats < StatData
       (scores_array.sum.to_f / scores_array.length).round(2)
     end
   end
+  
+  def average_goals_per_game
+    game_array = all_games.map do |game|
+      game.total_score
+    end
+    (game_array.sum.to_f / game_array.count).round(2)
+  end
 end

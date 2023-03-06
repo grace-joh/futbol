@@ -1,6 +1,10 @@
 require_relative 'stat_data'
+require_relative 'game_stats'
+require_relative 'league_stats'
+require_relative 'season_stats'
 
 class StatTracker < StatData
+  attr_reader :game_stats, :league_stats, :season_stats
 
   def self.from_csv(locations)
     new(locations)
@@ -79,12 +83,12 @@ class StatTracker < StatData
 
   # season stats
 
-  def winningest_coach
-    @season_stats.winningest_coach
+  def winningest_coach(season)
+    @season_stats.winningest_coach(season)
   end
 
-  def worst_coach
-    @season_stats.worst_coach
+  def worst_coach(season)
+    @season_stats.worst_coach(season)
   end
 
   def most_accurate_team(season)

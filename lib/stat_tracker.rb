@@ -3,62 +3,20 @@ require_relative 'game'
 require_relative 'team'
 require_relative 'game_team'
 
-class StatTracker 
-  #include modules
+class StatTracker < StatData
 
   def self.from_csv(locations)
     new(locations)
   end
 
-  attr_reader :game_data, :team_data, :game_teams_data
-
   def initialize(locations)
-    @game_data = CSV.read locations[:games], headers: true, header_converters: :symbol
-    @team_data = CSV.read locations[:teams], headers: true, header_converters: :symbol
-    @game_teams_data = CSV.read locations[:game_teams], headers: true, header_converters: :symbol
+    super(locations)
+    @game_stats = GameStats.new(locations)
+    @league_stats = LeagueStats.new(locations)
+    @season_stats = SeasonStats.new(locations)
   end
 
-  def all_games
-    @game_data.map do |row|
-      Game.new(row)
-    end
-  end
 
-  def all_teams
-    @team_data.map do |row|
-      team = Team.new(row)
-      team.games = all_games.select { |game| game.home_id == team.team_id || game.away_id == team.team_id }
-      team
-    end
-  end
-
-  def all_game_teams
-    @game_teams_data.map do |row|
-      GameTeam.new(row)
-    end
-  end
-
-  def games_by_season
-    seasons = Hash.new([])
-    all_games.each do |game|
-      seasons[game.season] = []
-    end
-    seasons.each do |season, games_array|
-      all_games.each do |game|
-        games_array << game if game.season == season
-      end
-    end
-    seasons
-  end
-  #=====================================================================================================
-  def game_teams_by_season(season)
-    games_by_season[season].map do |game|
-      all_game_teams.find_all do |game_by_team|
-        game.id == game_by_team.game_id #array of gameteams
-                                        #in that season
-      end
-    end.flatten
-  end
   #add to winningest/worst
 #   def sort_coach_games(season)
 #   game_teams_by_season(season).each do |game_team|
@@ -124,31 +82,93 @@ class StatTracker
     coach_percentage.min_by {|coach, game_counters| game_counters}.first
   end
 
+  # game stats
+
   def highest_total_score
-    all_games.map do |game|
-      game.total_score
-    end.max
+    @game_stats.highest_total_score
   end
 
   def lowest_total_score
-    all_games.map do |game|
-      game.total_score
-    end.min
+    @game_stats.lowest_total_score
   end
 
+  def percentage_home_wins
+    @game_stats.percentage_home_wins
+  end
+
+  def percentage_visitor_wins
+    @game_stats.percentage_visitor_wins
+  end
+
+  def percentage_ties
+    @game_stats.percentage_ties
+  end
 
   def count_of_games_by_season
-    game_count = {}
-    data = games_by_season.map do |season, games|
-      game_count[season] = games.count
-    end
-    game_count
+    @game_stats.count_of_games_by_season 
+  end
+
+  def average_goals_by_game
+    @game_stats.average_goals_by_game
   end
 
   def average_goals_by_season
-    games_by_season.transform_values do |games_array|
-      scores_array = games_array.map(&:total_score)
-      (scores_array.sum.to_f / scores_array.length).round(2)
-    end
+    @game_stats.average_goals_by_season
+  end
+
+  # league stats
+
+  def count_of_teams
+    @league_stats.count_of_teams
+  end
+
+  def best_offense
+    @league_stats.best_offense
+  end
+
+  def worst_offense
+    @league_stats.worst_offense
+  end
+
+  def highest_scoring_visitor
+    @league_stats.highest_scoring_visitor
+  end
+
+  def highest_scoring_home_team
+    @league_stats.highest_scoring_home_team
+  end
+
+  def lowest_scoring_visitor
+    @league_stats.lowest_scoring_visitor
+  end
+
+  def lowest_scoring_home_team
+    @league_stats.lowest_scoring_home_team
+  end
+
+  # season stats
+
+  def winningest_coach
+    @season_stats.winningest_coach
+  end
+
+  def worst_coach
+    @season_stats.worst_coach
+  end
+
+  def most_accurate_team(season)
+    @season_stats.most_accurate_team(season)
+  end
+
+  def least_accurate_team(season)
+    @season_stats.least_accurate_team(season)
+  end
+
+  def most_tackles(season)
+    @season_stats.most_tackles(season)
+  end
+
+  def fewest_tackles(season)
+    @season_stats.fewest_tackles(season)
   end
 end

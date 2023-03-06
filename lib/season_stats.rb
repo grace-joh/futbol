@@ -5,7 +5,49 @@ class SeasonStats < StatData
     super(locations)
   end
 
-  # add winningest and worst coach methods
+  def winningest_coach(season)
+    coach_games = Hash.new([0,0,0])
+    game_teams_by_season(season).each do |game_team|
+      coach_games[game_team.head_coach] = [0,0,0]
+    end
+    game_teams_by_season(season).each do |game_team|
+      if game_team.result == "WIN"
+        coach_games[game_team.head_coach][0] +=1 
+      elsif game_team.result == "TIE"
+        coach_games[game_team.head_coach][1] +=1
+      elsif game_team.result == "LOSS"
+      coach_games[game_team.head_coach][2] +=1
+      else 
+        return false
+      end
+    end
+    coach_percentage = coach_games.transform_values do |details|
+      details[0].fdiv(details[0] + details[1] + details[2])
+   end
+    coach_percentage.max_by {|coach, game_counters| game_counters}.first
+  end
+
+  def worst_coach(season)
+    coach_games = Hash.new([0,0,0])
+    game_teams_by_season(season).each do |game_team|
+      coach_games[game_team.head_coach] = [0,0,0]
+    end
+    game_teams_by_season(season).each do |game_team|
+      if game_team.result == "WIN"
+        coach_games[game_team.head_coach][0] +=1 
+      elsif game_team.result == "TIE"
+        coach_games[game_team.head_coach][1] +=1
+      elsif game_team.result == "LOSS"
+      coach_games[game_team.head_coach][2] +=1
+      else 
+        return false
+      end
+    end
+    coach_percentage = coach_games.transform_values do |details|
+      details[0].fdiv(details[0] + details[1] + details[2])
+   end
+    coach_percentage.min_by {|coach, game_counters| game_counters}.first
+  end
 
   def most_accurate_team(season)
     most_accurate_id = goals_to_shots_ratio(season).max_by { |_team_id, ratio| ratio }.first

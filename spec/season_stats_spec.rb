@@ -15,7 +15,15 @@ RSpec.describe SeasonStats do
     @season_stats = SeasonStats.new(locations)
   end
 
-  # add test for winningest and worst coaches and any helper methods here
+  describe '#winningest/worst coach' do
+    it 'winningest coach' do
+      expect(@stat_tracker.winningest_coach('20132014')).to eq('Claude Julien')
+    end
+
+    it 'worst coach' do
+      expect(@stat_tracker.worst_coach('20132014')).to eq('Peter Laviolette')
+    end
+  end
 
   describe '#most_accurate_team and #least_accurate_team' do
     it 'returns the name of the team witha seasons  most accurate goals to shots ratio' do
@@ -61,16 +69,6 @@ RSpec.describe SeasonStats do
     it 'returns an array of game_teams corresponding to a seasons games' do
       expect(@season_stats.game_teams_by_season('20122013')).to be_an(Array)
       expect(@season_stats.game_teams_by_season('20122013').count).to eq(806 * 2)
-    end
-  end
-
-  describe '#winningest/worst coach' do
-    it 'winningest coach' do
-      expect(@stat_tracker.winningest_coach("20132014")).to eq("Claude Julien")
-    end
-
-    it 'worst coach' do
-      expect(@stat_tracker.worst_coach("20132014")).to eq("Peter Laviolette")
     end
   end
 end
